@@ -1,47 +1,76 @@
-# calculuscalculator
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculus Calculator - Advanced Mathematical Computing</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nerdamer/1.1.13/nerdamer.core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nerdamer/1.1.13/Calculus.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nerdamer/1.1.13/Algebra.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <meta name="description" content="Free online calculus calculator for derivatives, integrals, limits, and more. No installation required.">
+    <meta name="keywords" content="calculus, calculator, derivative, integral, limit, math, free">
+    <title>Calculus Calculator - Free Online Math Tool</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>∂</text></svg>">
+    
+    <!-- Math Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js"></script>
+    
+    <!-- KaTeX for LaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;500;600&family=Cormorant+Garamond:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:wght@300;400;600&display=swap');
-        
         :root {
             --primary-bg: #0a0a0f;
             --secondary-bg: #151520;
             --card-bg: #1a1a2e;
             --accent: #e8c547;
             --accent-dim: #b39635;
+            --accent-bright: #ffd966;
             --text-primary: #e8e8f0;
             --text-secondary: #a8a8b8;
+            --text-dim: #6a6a78;
             --border: #2a2a3e;
             --success: #4ecdc4;
             --error: #ff6b6b;
             --shadow: rgba(232, 197, 71, 0.1);
         }
-        
+
+        [data-theme="light"] {
+            --primary-bg: #f8f9fa;
+            --secondary-bg: #ffffff;
+            --card-bg: #ffffff;
+            --accent: #d4a94a;
+            --accent-dim: #a67c38;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-dim: #7a7a8a;
+            --border: #e0e0ea;
+            --success: #2aa89a;
+            --error: #e74c3c;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Crimson Pro', serif;
             background: linear-gradient(135deg, var(--primary-bg) 0%, #0f0f1a 100%);
             color: var(--text-primary);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
+            transition: all 0.3s ease;
         }
-        
+
         body::before {
             content: '';
             position: fixed;
@@ -55,7 +84,79 @@
             pointer-events: none;
             z-index: 0;
         }
-        
+
+        /* Navigation */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .brand-symbol {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .badge-github {
+            background: rgba(232, 197, 71, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .badge-github:hover {
+            background: rgba(232, 197, 71, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(232, 197, 71, 0.1);
+            border-color: var(--accent);
+        }
+
+        /* Container */
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -63,313 +164,382 @@
             position: relative;
             z-index: 1;
         }
-        
+
+        /* Header */
         header {
             text-align: center;
             margin-bottom: 60px;
             animation: fadeInDown 0.8s ease-out;
         }
-        
+
         h1 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 300;
             color: var(--accent);
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 30px var(--shadow);
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
             letter-spacing: 3px;
-            text-transform: uppercase;
-            font-weight: 300;
+            margin-bottom: 15px;
         }
-        
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+        }
+
+        .header-badges {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 10px 20px;
+            background: rgba(232, 197, 71, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 25px;
+            color: var(--accent);
+            font-size: 0.9rem;
+            letter-spacing: 1.5px;
+        }
+
+        /* Calculator Grid */
         .calc-grid {
             display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            grid-template-columns: 320px 1fr;
+            gap: 35px;
+            margin-bottom: 60px;
         }
-        
+
+        /* Sidebar */
         .sidebar {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 16px;
+            padding: 30px;
             height: fit-content;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: fadeInLeft 0.6s ease-out 0.2s backwards;
+            position: sticky;
+            top: 100px;
         }
-        
+
         .nav-title {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
             color: var(--text-secondary);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-weight: 600;
         }
-        
+
         .calc-type-btn {
             width: 100%;
-            padding: 15px 20px;
+            padding: 18px 22px;
             background: transparent;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             color: var(--text-primary);
             font-family: 'Crimson Pro', serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             text-align: left;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
-        
+
         .calc-type-btn:hover {
             background: rgba(232, 197, 71, 0.05);
             border-color: var(--accent-dim);
-            transform: translateX(5px);
+            transform: translateX(8px);
         }
-        
+
         .calc-type-btn.active {
             background: linear-gradient(135deg, rgba(232, 197, 71, 0.15), rgba(232, 197, 71, 0.05));
             border-color: var(--accent);
-            box-shadow: 0 0 20px var(--shadow);
+            box-shadow: 0 0 25px var(--shadow);
         }
-        
-        .calc-type-btn::before {
-            content: '∂';
-            font-size: 1.4rem;
+
+        .btn-icon {
+            font-size: 1.6rem;
             color: var(--accent);
-            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
         }
-        
+
+        /* Main Content */
         .main-content {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 40px;
+            border-radius: 16px;
+            padding: 45px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: fadeInRight 0.6s ease-out 0.2s backwards;
         }
-        
+
         .calc-section {
             display: none;
         }
-        
+
         .calc-section.active {
             display: block;
             animation: fadeIn 0.4s ease-out;
         }
-        
+
+        .section-header {
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+        }
+
         .section-title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: var(--accent);
-            margin-bottom: 30px;
-            font-weight: 400;
+            margin-bottom: 12px;
         }
-        
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Input Groups */
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 28px;
         }
-        
+
         label {
             display: block;
-            font-size: 1rem;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
+            margin-bottom: 12px;
         }
-        
-        input, select {
+
+        .label-text {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .label-hint {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-weight: 400;
+            text-transform: none;
+        }
+
+        .input-field {
             width: 100%;
-            padding: 15px 20px;
+            padding: 16px 20px;
             background: var(--secondary-bg);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             color: var(--text-primary);
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             transition: all 0.3s ease;
         }
-        
-        input:focus, select:focus {
+
+        .input-field:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(232, 197, 71, 0.1);
+            box-shadow: 0 0 0 4px rgba(232, 197, 71, 0.1);
         }
-        
+
+        .input-examples {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .example-label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .example-btn {
+            padding: 6px 12px;
+            background: rgba(232, 197, 71, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-btn:hover {
+            background: rgba(232, 197, 71, 0.1);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        /* Buttons */
         .btn-primary {
             background: linear-gradient(135deg, var(--accent), var(--accent-dim));
             color: var(--primary-bg);
-            padding: 15px 40px;
+            padding: 18px 45px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-family: 'Crimson Pro', serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            box-shadow: 0 5px 20px rgba(232, 197, 71, 0.3);
+            letter-spacing: 2.5px;
+            box-shadow: 0 6px 25px rgba(232, 197, 71, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
         }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(232, 197, 71, 0.4);
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(232, 197, 71, 0.45);
         }
-        
-        .btn-primary:active {
-            transform: translateY(0);
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
-        
+
+        /* Result Box */
         .result-box {
-            margin-top: 30px;
-            padding: 30px;
+            margin-top: 35px;
+            padding: 35px;
             background: var(--secondary-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
-            min-height: 100px;
             display: none;
         }
-        
+
         .result-box.show {
             display: block;
-            animation: slideUp 0.4s ease-out;
+            animation: slideUp 0.5s ease-out;
         }
-        
+
         .result-label {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
+            letter-spacing: 2.5px;
+            margin-bottom: 18px;
+            font-weight: 600;
         }
-        
+
         .result-content {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             color: var(--success);
-            line-height: 1.8;
-            word-wrap: break-word;
+            line-height: 1.9;
+            padding: 15px;
+            background: rgba(78, 205, 196, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
         }
-        
+
+        .result-content.error {
+            color: var(--error);
+            background: rgba(255, 107, 107, 0.05);
+            border-left-color: var(--error);
+        }
+
+        /* Steps */
         .steps-container {
-            margin-top: 20px;
-            padding-top: 20px;
+            margin-top: 28px;
+            padding-top: 28px;
             border-top: 1px solid var(--border);
         }
-        
+
         .step {
-            margin-bottom: 15px;
-            padding: 15px;
+            margin-bottom: 18px;
+            padding: 18px;
             background: rgba(232, 197, 71, 0.03);
-            border-left: 3px solid var(--accent);
-            border-radius: 4px;
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
         }
-        
+
         .step-label {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            font-weight: 600;
         }
-        
+
         .step-content {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
+            font-size: 1.05rem;
             color: var(--text-primary);
         }
-        
-        #graph-container {
-            margin-top: 30px;
-            padding: 20px;
-            background: var(--secondary-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            display: none;
+
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
         }
-        
-        #graph-container.show {
-            display: block;
-            animation: fadeIn 0.6s ease-out;
+
+        .footer-text {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
         }
-        
-        .error {
-            color: var(--error);
-        }
-        
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
+
+        /* Animations */
         @keyframes fadeInDown {
             from {
                 opacity: 0;
-                transform: translateY(-30px);
+                transform: translateY(-40px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
+
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        
+
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
+        /* Responsive */
         @media (max-width: 968px) {
             .calc-grid {
                 grid-template-columns: 1fr;
@@ -379,7 +549,8 @@
                 display: flex;
                 overflow-x: auto;
                 padding: 20px;
-                gap: 10px;
+                gap: 12px;
+                position: static;
             }
             
             .nav-title {
@@ -387,415 +558,481 @@
             }
             
             .calc-type-btn {
-                min-width: 150px;
+                min-width: 160px;
                 margin-bottom: 0;
             }
             
             h1 {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
             }
             
-            .grid-2 {
+            .grid-2, .grid-3 {
                 grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 30px 25px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-symbol">∂</span>
+                <span class="brand-name">Calculus</span>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <a href="https://github.com/yourusername/calculus-calculator" class="badge-github" target="_blank">⭐ GitHub</a>
+                <button class="theme-toggle" onclick="toggleTheme()">☀</button>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <header>
             <h1>Calculus</h1>
-            <p class="subtitle">Advanced Mathematical Computing</p>
+            <p class="subtitle">Free Online Calculator</p>
+            <div class="header-badges">
+                <span class="badge">100% Free</span>
+                <span class="badge">No Backend Required</span>
+                <span class="badge">GitHub Pages Ready</span>
+            </div>
         </header>
         
         <div class="calc-grid">
             <div class="sidebar">
                 <div class="nav-title">Operations</div>
-                <button class="calc-type-btn active" data-calc="derivative">Derivatives</button>
-                <button class="calc-type-btn" data-calc="integral">Integrals</button>
-                <button class="calc-type-btn" data-calc="limit">Limits</button>
-                <button class="calc-type-btn" data-calc="series">Series</button>
-                <button class="calc-type-btn" data-calc="equation">Equations</button>
+                <button class="calc-type-btn active" onclick="switchCalc('derivative')">
+                    <span class="btn-icon">∂</span>
+                    <span>Derivatives</span>
+                </button>
+                <button class="calc-type-btn" onclick="switchCalc('integral')">
+                    <span class="btn-icon">∫</span>
+                    <span>Integrals</span>
+                </button>
+                <button class="calc-type-btn" onclick="switchCalc('limit')">
+                    <span class="btn-icon">lim</span>
+                    <span>Limits</span>
+                </button>
+                <button class="calc-type-btn" onclick="switchCalc('series')">
+                    <span class="btn-icon">∑</span>
+                    <span>Series</span>
+                </button>
+                <button class="calc-type-btn" onclick="switchCalc('equation')">
+                    <span class="btn-icon">=</span>
+                    <span>Equations</span>
+                </button>
             </div>
             
             <div class="main-content">
                 <!-- Derivative Section -->
                 <div class="calc-section active" id="derivative-section">
-                    <h2 class="section-title">Derivative Calculator</h2>
-                    <div class="input-group">
-                        <label for="deriv-func">Function f(x)</label>
-                        <input type="text" id="deriv-func" placeholder="e.g., x^2 + 3*x + sin(x)">
+                    <div class="section-header">
+                        <h2 class="section-title">Derivative Calculator</h2>
+                        <p class="section-description">Calculate derivatives with symbolic computation</p>
                     </div>
+                    
                     <div class="input-group">
-                        <label for="deriv-var">Variable</label>
-                        <input type="text" id="deriv-var" value="x" placeholder="x">
+                        <label>
+                            <span class="label-text">Function f(x)</span>
+                            <span class="label-hint">Use * for multiplication, ^ for powers</span>
+                        </label>
+                        <input type="text" id="deriv-func" class="input-field" placeholder="x^2 + 3*x + sin(x)">
+                        <div class="input-examples">
+                            <span class="example-label">Examples:</span>
+                            <button class="example-btn" onclick="setExample('deriv-func', 'x^2 + 3*x')">x² + 3x</button>
+                            <button class="example-btn" onclick="setExample('deriv-func', 'sin(x)*exp(x)')">sin(x)·eˣ</button>
+                            <button class="example-btn" onclick="setExample('deriv-func', 'x^3/(x^2 + 1)')">x³/(x²+1)</button>
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label for="deriv-order">Order</label>
-                        <select id="deriv-order">
-                            <option value="1">First Derivative (f')</option>
-                            <option value="2">Second Derivative (f'')</option>
-                            <option value="3">Third Derivative (f''')</option>
-                        </select>
+                    
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <label><span class="label-text">Variable</span></label>
+                            <input type="text" id="deriv-var" class="input-field" value="x">
+                        </div>
+                        <div class="input-group">
+                            <label><span class="label-text">Order</span></label>
+                            <select id="deriv-order" class="input-field">
+                                <option value="1">First Derivative</option>
+                                <option value="2">Second Derivative</option>
+                                <option value="3">Third Derivative</option>
+                            </select>
+                        </div>
                     </div>
-                    <button class="btn-primary" onclick="calculateDerivative()">Calculate Derivative</button>
+                    
+                    <button class="btn-primary" onclick="calculateDerivative()">Calculate →</button>
                     <div class="result-box" id="deriv-result"></div>
-                    <div id="deriv-graph"></div>
                 </div>
                 
                 <!-- Integral Section -->
                 <div class="calc-section" id="integral-section">
-                    <h2 class="section-title">Integral Calculator</h2>
-                    <div class="input-group">
-                        <label for="int-func">Function f(x)</label>
-                        <input type="text" id="int-func" placeholder="e.g., x^2 + 3*x">
+                    <div class="section-header">
+                        <h2 class="section-title">Integral Calculator</h2>
+                        <p class="section-description">Compute integrals symbolically</p>
                     </div>
+                    
                     <div class="input-group">
-                        <label for="int-var">Variable</label>
-                        <input type="text" id="int-var" value="x" placeholder="x">
-                    </div>
-                    <div class="input-group">
-                        <label for="int-type">Type</label>
-                        <select id="int-type" onchange="toggleIntegralLimits()">
-                            <option value="indefinite">Indefinite Integral</option>
-                            <option value="definite">Definite Integral</option>
-                        </select>
-                    </div>
-                    <div id="integral-limits" style="display: none;">
-                        <div class="grid-2">
-                            <div class="input-group">
-                                <label for="int-lower">Lower Limit</label>
-                                <input type="text" id="int-lower" placeholder="0">
-                            </div>
-                            <div class="input-group">
-                                <label for="int-upper">Upper Limit</label>
-                                <input type="text" id="int-upper" placeholder="1">
-                            </div>
+                        <label>
+                            <span class="label-text">Function f(x)</span>
+                        </label>
+                        <input type="text" id="int-func" class="input-field" placeholder="x^2 + 3*x">
+                        <div class="input-examples">
+                            <span class="example-label">Examples:</span>
+                            <button class="example-btn" onclick="setExample('int-func', 'x^2')">x²</button>
+                            <button class="example-btn" onclick="setExample('int-func', 'sin(x)')">sin(x)</button>
+                            <button class="example-btn" onclick="setExample('int-func', '1/(x^2 + 1)')">1/(x²+1)</button>
                         </div>
                     </div>
-                    <button class="btn-primary" onclick="calculateIntegral()">Calculate Integral</button>
+                    
+                    <div class="input-group">
+                        <label><span class="label-text">Variable</span></label>
+                        <input type="text" id="int-var" class="input-field" value="x">
+                    </div>
+                    
+                    <button class="btn-primary" onclick="calculateIntegral()">Calculate →</button>
                     <div class="result-box" id="int-result"></div>
-                    <div id="int-graph"></div>
                 </div>
                 
                 <!-- Limit Section -->
                 <div class="calc-section" id="limit-section">
-                    <h2 class="section-title">Limit Calculator</h2>
-                    <div class="input-group">
-                        <label for="limit-func">Function f(x)</label>
-                        <input type="text" id="limit-func" placeholder="e.g., (x^2 - 1)/(x - 1)">
+                    <div class="section-header">
+                        <h2 class="section-title">Limit Calculator</h2>
+                        <p class="section-description">Evaluate limits at any point</p>
                     </div>
+                    
                     <div class="input-group">
-                        <label for="limit-var">Variable</label>
-                        <input type="text" id="limit-var" value="x" placeholder="x">
+                        <label><span class="label-text">Function f(x)</span></label>
+                        <input type="text" id="limit-func" class="input-field" placeholder="(x^2 - 1)/(x - 1)">
+                        <div class="input-examples">
+                            <span class="example-label">Examples:</span>
+                            <button class="example-btn" onclick="setExample('limit-func', '(x^2 - 1)/(x - 1)')">Indeterminate</button>
+                            <button class="example-btn" onclick="setExample('limit-func', 'sin(x)/x')">sin(x)/x</button>
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label for="limit-point">Approaches</label>
-                        <input type="text" id="limit-point" placeholder="e.g., 0, infinity">
+                    
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <label><span class="label-text">Variable</span></label>
+                            <input type="text" id="limit-var" class="input-field" value="x">
+                        </div>
+                        <div class="input-group">
+                            <label><span class="label-text">Approaches</span></label>
+                            <input type="text" id="limit-point" class="input-field" placeholder="0">
+                        </div>
                     </div>
-                    <button class="btn-primary" onclick="calculateLimit()">Calculate Limit</button>
+                    
+                    <button class="btn-primary" onclick="calculateLimit()">Calculate →</button>
                     <div class="result-box" id="limit-result"></div>
                 </div>
                 
                 <!-- Series Section -->
                 <div class="calc-section" id="series-section">
-                    <h2 class="section-title">Series Calculator</h2>
-                    <div class="input-group">
-                        <label for="series-func">Function f(x)</label>
-                        <input type="text" id="series-func" placeholder="e.g., e^x, sin(x), cos(x)">
+                    <div class="section-header">
+                        <h2 class="section-title">Series Calculator</h2>
+                        <p class="section-description">Taylor and Maclaurin series</p>
                     </div>
+                    
                     <div class="input-group">
-                        <label for="series-var">Variable</label>
-                        <input type="text" id="series-var" value="x" placeholder="x">
+                        <label><span class="label-text">Function f(x)</span></label>
+                        <input type="text" id="series-func" class="input-field" placeholder="exp(x)">
+                        <div class="input-examples">
+                            <span class="example-label">Examples:</span>
+                            <button class="example-btn" onclick="setExample('series-func', 'exp(x)')">eˣ</button>
+                            <button class="example-btn" onclick="setExample('series-func', 'sin(x)')">sin(x)</button>
+                            <button class="example-btn" onclick="setExample('series-func', 'cos(x)')">cos(x)</button>
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label for="series-point">Expansion Point (a)</label>
-                        <input type="text" id="series-point" value="0" placeholder="0">
+                    
+                    <div class="grid-3">
+                        <div class="input-group">
+                            <label><span class="label-text">Variable</span></label>
+                            <input type="text" id="series-var" class="input-field" value="x">
+                        </div>
+                        <div class="input-group">
+                            <label><span class="label-text">Point</span></label>
+                            <input type="text" id="series-point" class="input-field" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label><span class="label-text">Terms</span></label>
+                            <input type="number" id="series-terms" class="input-field" value="5" min="1" max="10">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label for="series-terms">Number of Terms</label>
-                        <input type="number" id="series-terms" value="5" min="1" max="10">
-                    </div>
-                    <button class="btn-primary" onclick="calculateSeries()">Calculate Series</button>
+                    
+                    <button class="btn-primary" onclick="calculateSeries()">Calculate →</button>
                     <div class="result-box" id="series-result"></div>
                 </div>
                 
-                <!-- Equation Solver Section -->
+                <!-- Equation Section -->
                 <div class="calc-section" id="equation-section">
-                    <h2 class="section-title">Equation Solver</h2>
-                    <div class="input-group">
-                        <label for="eq-func">Equation (set equal to 0)</label>
-                        <input type="text" id="eq-func" placeholder="e.g., x^2 - 4 (solves x^2 - 4 = 0)">
+                    <div class="section-header">
+                        <h2 class="section-title">Equation Solver</h2>
+                        <p class="section-description">Solve algebraic equations</p>
                     </div>
+                    
                     <div class="input-group">
-                        <label for="eq-var">Variable</label>
-                        <input type="text" id="eq-var" value="x" placeholder="x">
+                        <label>
+                            <span class="label-text">Equation (= 0)</span>
+                            <span class="label-hint">Enter equation to solve</span>
+                        </label>
+                        <input type="text" id="eq-func" class="input-field" placeholder="x^2 - 4">
+                        <div class="input-examples">
+                            <span class="example-label">Examples:</span>
+                            <button class="example-btn" onclick="setExample('eq-func', 'x^2 - 4')">x² - 4</button>
+                            <button class="example-btn" onclick="setExample('eq-func', 'x^3 - 6*x^2 + 11*x - 6')">Cubic</button>
+                        </div>
                     </div>
-                    <button class="btn-primary" onclick="solveEquation()">Solve Equation</button>
+                    
+                    <div class="input-group">
+                        <label><span class="label-text">Variable</span></label>
+                        <input type="text" id="eq-var" class="input-field" value="x">
+                    </div>
+                    
+                    <button class="btn-primary" onclick="solveEquation()">Solve →</button>
                     <div class="result-box" id="eq-result"></div>
                 </div>
             </div>
         </div>
     </div>
     
+    <footer class="footer">
+        <p class="footer-text">Built with JavaScript • Runs 100% in your browser</p>
+        <p class="footer-text" style="color: var(--text-dim); font-size: 0.9rem;">© 2025 Free Calculus Calculator • Hosted on GitHub Pages</p>
+    </footer>
+
     <script>
-        // Navigation
-        document.querySelectorAll('.calc-type-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Remove active class from all buttons and sections
-                document.querySelectorAll('.calc-type-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.calc-section').forEach(s => s.classList.remove('active'));
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // Show corresponding section
-                const calcType = this.dataset.calc;
-                document.getElementById(`${calcType}-section`).classList.add('active');
-            });
-        });
-        
-        function toggleIntegralLimits() {
-            const type = document.getElementById('int-type').value;
-            const limitsDiv = document.getElementById('integral-limits');
-            limitsDiv.style.display = type === 'definite' ? 'block' : 'none';
+        // Theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.querySelector('.theme-toggle');
+            if (body.hasAttribute('data-theme')) {
+                body.removeAttribute('data-theme');
+                btn.textContent = '☀';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                btn.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
         }
-        
-        function showResult(resultId, content, isError = false) {
-            const resultBox = document.getElementById(resultId);
-            resultBox.innerHTML = `
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+            document.querySelector('.theme-toggle').textContent = '🌙';
+        }
+
+        // Switch calculator
+        function switchCalc(type) {
+            document.querySelectorAll('.calc-type-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.calc-section').forEach(s => s.classList.remove('active'));
+            event.target.closest('.calc-type-btn').classList.add('active');
+            document.getElementById(type + '-section').classList.add('active');
+        }
+
+        // Set example
+        function setExample(id, value) {
+            document.getElementById(id).value = value;
+        }
+
+        // Show result
+        function showResult(id, content, isError = false) {
+            const box = document.getElementById(id);
+            box.innerHTML = `
                 <div class="result-label">Result</div>
                 <div class="result-content ${isError ? 'error' : ''}">${content}</div>
             `;
-            resultBox.classList.add('show');
+            box.classList.add('show');
         }
-        
-        function showSteps(resultId, steps) {
-            const resultBox = document.getElementById(resultId);
-            let stepsHtml = '<div class="steps-container">';
-            steps.forEach((step, index) => {
-                stepsHtml += `
+
+        // Show steps
+        function showSteps(id, steps) {
+            const box = document.getElementById(id);
+            let html = '<div class="steps-container">';
+            steps.forEach(step => {
+                html += `
                     <div class="step">
-                        <div class="step-label">Step ${index + 1}</div>
-                        <div class="step-content">${step}</div>
+                        <div class="step-label">${step.label}</div>
+                        <div class="step-content">${step.content}</div>
                     </div>
                 `;
             });
-            stepsHtml += '</div>';
-            resultBox.innerHTML += stepsHtml;
+            html += '</div>';
+            box.innerHTML += html;
         }
-        
-        // Derivative Calculator
+
+        // Calculate Derivative
         function calculateDerivative() {
             try {
                 const func = document.getElementById('deriv-func').value;
                 const variable = document.getElementById('deriv-var').value;
                 const order = parseInt(document.getElementById('deriv-order').value);
-                
+
                 if (!func) {
                     showResult('deriv-result', 'Please enter a function', true);
                     return;
                 }
-                
+
                 let result = nerdamer(`diff(${func}, ${variable})`).toString();
-                let steps = [`Original function: ${func}`, `First derivative: ${result}`];
-                
-                // Calculate higher order derivatives
+                let steps = [
+                    { label: 'Original Function', content: `f(${variable}) = ${func}` },
+                    { label: 'First Derivative', content: `f'(${variable}) = ${result}` }
+                ];
+
                 for (let i = 2; i <= order; i++) {
                     result = nerdamer(`diff(${result}, ${variable})`).toString();
-                    steps.push(`${i === 2 ? 'Second' : i === 3 ? 'Third' : i + 'th'} derivative: ${result}`);
+                    steps.push({
+                        label: i === 2 ? 'Second Derivative' : 'Third Derivative',
+                        content: `f${"'".repeat(i)}(${variable}) = ${result}`
+                    });
                 }
-                
+
                 showResult('deriv-result', result);
                 showSteps('deriv-result', steps);
-                
             } catch (error) {
                 showResult('deriv-result', `Error: ${error.message}`, true);
             }
         }
-        
-        // Integral Calculator
+
+        // Calculate Integral
         function calculateIntegral() {
             try {
                 const func = document.getElementById('int-func').value;
                 const variable = document.getElementById('int-var').value;
-                const type = document.getElementById('int-type').value;
-                
+
                 if (!func) {
                     showResult('int-result', 'Please enter a function', true);
                     return;
                 }
-                
-                if (type === 'indefinite') {
-                    const result = nerdamer(`integrate(${func}, ${variable})`).toString();
-                    const steps = [
-                        `Original function: ${func}`,
-                        `Indefinite integral: ∫(${func}) d${variable} = ${result} + C`
-                    ];
-                    showResult('int-result', result + ' + C');
-                    showSteps('int-result', steps);
-                } else {
-                    const lower = document.getElementById('int-lower').value;
-                    const upper = document.getElementById('int-upper').value;
-                    
-                    if (!lower || !upper) {
-                        showResult('int-result', 'Please enter both limits', true);
-                        return;
-                    }
-                    
-                    const antiderivative = nerdamer(`integrate(${func}, ${variable})`).toString();
-                    const upperValue = nerdamer(antiderivative, {[variable]: upper}).evaluate().toString();
-                    const lowerValue = nerdamer(antiderivative, {[variable]: lower}).evaluate().toString();
-                    const result = nerdamer(`${upperValue} - (${lowerValue})`).evaluate().toString();
-                    
-                    const steps = [
-                        `Original function: ${func}`,
-                        `Antiderivative: ${antiderivative}`,
-                        `Evaluate at upper limit (${upper}): ${upperValue}`,
-                        `Evaluate at lower limit (${lower}): ${lowerValue}`,
-                        `Definite integral: ${result}`
-                    ];
-                    
-                    showResult('int-result', result);
-                    showSteps('int-result', steps);
-                }
-                
+
+                const result = nerdamer(`integrate(${func}, ${variable})`).toString();
+                const steps = [
+                    { label: 'Original Function', content: `f(${variable}) = ${func}` },
+                    { label: 'Indefinite Integral', content: `∫ ${func} d${variable} = ${result} + C` }
+                ];
+
+                showResult('int-result', result + ' + C');
+                showSteps('int-result', steps);
             } catch (error) {
                 showResult('int-result', `Error: ${error.message}`, true);
             }
         }
-        
-        // Limit Calculator
+
+        // Calculate Limit
         function calculateLimit() {
             try {
                 const func = document.getElementById('limit-func').value;
                 const variable = document.getElementById('limit-var').value;
-                const point = document.getElementById('limit-point').value;
-                
-                if (!func || !point) {
-                    showResult('limit-result', 'Please enter function and limit point', true);
+                const point = document.getElementById('limit-point').value || '0';
+
+                if (!func) {
+                    showResult('limit-result', 'Please enter a function', true);
                     return;
                 }
-                
+
+                // Try direct substitution first
                 let result;
-                let steps = [`Original function: ${func}`];
-                
-                if (point.toLowerCase() === 'infinity' || point === '∞') {
-                    // For limits at infinity, try substitution or simplification
-                    steps.push(`Limit as ${variable} → ∞`);
-                    try {
-                        result = nerdamer(`limit(${func}, ${variable}, infinity)`).toString();
-                    } catch (e) {
-                        // Fallback: evaluate at very large number
-                        result = nerdamer(func, {[variable]: 1000000}).evaluate().toString();
-                        steps.push('(Approximated with large value)');
-                    }
-                } else {
-                    steps.push(`Limit as ${variable} → ${point}`);
-                    // Try direct substitution first
-                    try {
-                        result = nerdamer(func, {[variable]: point}).evaluate().toString();
-                        if (result === 'NaN' || result.includes('Infinity')) {
-                            throw new Error('Indeterminate form');
-                        }
-                        steps.push('Direct substitution successful');
-                    } catch (e) {
-                        steps.push('Indeterminate form detected, simplifying...');
-                        result = 'Use L\'Hôpital\'s rule or algebraic simplification';
-                    }
+                try {
+                    result = nerdamer(func).evaluate({[variable]: point}).toString();
+                } catch (e) {
+                    result = 'Limit requires L\'Hôpital\'s rule or simplification';
                 }
-                
+
+                const steps = [
+                    { label: 'Original Function', content: `f(${variable}) = ${func}` },
+                    { label: 'Limit', content: `lim(${variable} → ${point}) ${func} = ${result}` }
+                ];
+
                 showResult('limit-result', result);
                 showSteps('limit-result', steps);
-                
             } catch (error) {
                 showResult('limit-result', `Error: ${error.message}`, true);
             }
         }
-        
-        // Series Calculator
+
+        // Calculate Series
         function calculateSeries() {
             try {
                 const func = document.getElementById('series-func').value;
                 const variable = document.getElementById('series-var').value;
-                const point = document.getElementById('series-point').value;
+                const point = document.getElementById('series-point').value || '0';
                 const terms = parseInt(document.getElementById('series-terms').value);
-                
+
                 if (!func) {
                     showResult('series-result', 'Please enter a function', true);
                     return;
                 }
-                
-                let steps = [`Original function: ${func}`, `Taylor series expansion about ${variable} = ${point}`];
-                let series = [];
-                
+
                 // Calculate Taylor series terms
+                let series = [];
                 let currentFunc = func;
+                
                 for (let n = 0; n < terms; n++) {
-                    // Evaluate derivative at point
-                    let derivative = n === 0 ? func : nerdamer(`diff(${currentFunc}, ${variable})`).toString();
-                    let value = nerdamer(derivative, {[variable]: point}).evaluate().toString();
+                    const derivative = n === 0 ? func : nerdamer(`diff(${currentFunc}, ${variable})`).toString();
+                    const value = nerdamer(derivative).evaluate({[variable]: point}).toString();
                     
-                    // Create term
                     let factorial = 1;
                     for (let i = 2; i <= n; i++) factorial *= i;
                     
                     let term;
                     if (n === 0) {
                         term = value;
-                    } else if (n === 1) {
-                        term = `${value}*(${variable} - ${point})`;
                     } else {
                         term = `(${value}/${factorial})*(${variable} - ${point})^${n}`;
                     }
                     
                     series.push(term);
-                    steps.push(`f${'\''.repeat(n)}(${point}) = ${value}`);
-                    
                     currentFunc = derivative;
                 }
-                
+
                 const result = series.join(' + ');
                 const simplified = nerdamer(result).toString();
-                
-                steps.push(`Taylor series: ${simplified}`);
+
+                const steps = [
+                    { label: 'Original Function', content: `f(${variable}) = ${func}` },
+                    { label: 'Taylor Series', content: simplified }
+                ];
+
                 showResult('series-result', simplified);
                 showSteps('series-result', steps);
-                
             } catch (error) {
                 showResult('series-result', `Error: ${error.message}`, true);
             }
         }
-        
-        // Equation Solver
+
+        // Solve Equation
         function solveEquation() {
             try {
                 const func = document.getElementById('eq-func').value;
                 const variable = document.getElementById('eq-var').value;
-                
+
                 if (!func) {
                     showResult('eq-result', 'Please enter an equation', true);
                     return;
                 }
-                
+
                 const solutions = nerdamer.solveEquations(`${func}=0`, variable);
-                const steps = [
-                    `Original equation: ${func} = 0`,
-                    `Solving for ${variable}...`
-                ];
                 
                 let result;
+                let steps = [
+                    { label: 'Original Equation', content: `${func} = 0` }
+                ];
+
                 if (Array.isArray(solutions)) {
-                    result = solutions.map((sol, i) => `${variable}${i + 1} = ${sol.toString()}`).join('<br>');
-                    steps.push(`Found ${solutions.length} solution(s)`);
+                    result = solutions.map((sol, i) => `${variable} = ${sol.toString()}`).join(', ');
+                    solutions.forEach((sol, i) => {
+                        steps.push({ label: `Solution ${i + 1}`, content: `${variable} = ${sol.toString()}` });
+                    });
                 } else {
                     result = `${variable} = ${solutions.toString()}`;
-                    steps.push('Solution found');
+                    steps.push({ label: 'Solution', content: result });
                 }
-                
+
                 showResult('eq-result', result);
                 showSteps('eq-result', steps);
-                
             } catch (error) {
                 showResult('eq-result', `Error: ${error.message}`, true);
             }
